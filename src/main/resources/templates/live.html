@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html class="full-height" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>直播弹幕-场景</title>
+    <!-- Font Awesome -->
+    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.css" rel="stylesheet">
+    <!-- Material Design Bootstrap -->
+    <link href="/css/mdb.css" rel="stylesheet">
+    <link href="/css/home.css" rel="stylesheet">
+    <link href="/css/toastr.css" rel="stylesheet">
+    <style>
+        .chip {
+            display: inline-block;
+            height: 32px;
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(0,0,0,.6);
+            line-height: 32px;
+            padding: 0 12px;
+            border-radius: 16px;
+            background-color: #eceff1;
+            margin-bottom: 1rem;
+            margin-right: 1rem;
+            animation: message 8s linear;
+            position: absolute;
+            top: 70px;
+            z-index: 99;
+            opacity: 0.7;
+        }
+        .chip img {
+            float: left;
+            margin: 0 8px 0 -12px;
+            height: 32px;
+            width: 32px;
+            border-radius: 50%;
+        }
+        .chip.chip-md {
+            height: 42px;
+            line-height: 42px;
+            border-radius: 21px;
+        }
+        .chip.chip-md img {
+            height: 42px;
+            width: 42px;
+        }
+        .chip.chip-md .close {
+            height: 42px;
+            line-height: 42px;
+            border-radius: 21px;
+        }
+
+        .chip.chip-lg {
+            height: 52px;
+            line-height: 52px;
+            border-radius: 26px;
+        }
+        .chip.chip-lg img {
+            height: 52px;
+            width: 52px;
+        }
+        .chip.chip-lg .close {
+            height: 52px;
+            line-height: 52px;
+            border-radius: 26px;
+        }
+        @keyframes message
+        {
+            from {
+                right: 0;
+            }
+            to {
+                right: 80%;
+            }
+        }
+    </style>
+
+</head>
+
+<body class="creative-lp">
+
+<!-- Navigation & Intro -->
+<header>
+
+    <!--Intro Section-->
+    <section class="view intro-2">
+        <div class="full-bg-img">
+            <div class="mask rgba-gradient-1">
+                <div class="container flex-center">
+                    <div class="row flex-center" id="app">
+
+                        <div style="position: relative" id="main">
+
+                            <video class="z-depth-1" autoplay loop controls style="width: 100%; height: auto;">
+                                <source src="https://mdbootstrap.com/img/video/Sail-Away.mp4" type="video/mp4" />
+                            </video>
+
+                            <br>
+
+                            <div>
+                                <textarea type="text" id="message" class="form-control" rows="3" placeholder="说点什么吧。。。" v-model="content"></textarea>
+
+                                <div class="text-right mt-3">
+                                    <button type="button" class="btn pink-gradient btn-rounded z-depth-1a" @click="sendMessage">发送弹幕</button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+</header>
+<!-- Navigation & Intro -->
+
+<!-- JQuery -->
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<!-- Bootstrap core JavaScript -->
+<script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<!-- MDB core JavaScript -->
+<script src="https://cdn.bootcss.com/mdbootstrap/4.5.0/js/mdb.min.js"></script>
+<script src="https://cdn.bootcss.com/toastr.js/latest/toastr.min.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.5.3/vue.min.js"></script>
+<script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"></script>
+<script src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
+<script>
+    //Animation init
+    new WOW().init();
+
+    String.prototype.format = function() {
+        if(arguments.length === 0) return this;
+        var param = arguments[0];
+        var s = this;
+        if(typeof(param) === 'object') {
+            for(var key in param)
+                s = s.replace(new RegExp("\\{" + key + "\\}", "g"), param[key]);
+            return s;
+        } else {
+            for(var i = 0; i < arguments.length; i++)
+                s = s.replace(new RegExp("\\{" + i + "\\}", "g"), arguments[i]);
+            return s;
+        }
+    }
+
+</script>
+
+<script th:inline="javascript">
+
+    // stomp 客户端
+    var stompClient = null;
+
+    /**
+     * 建立 WebSocket 连接
+     */
+    function connect() {
+        var socket = new SockJS('/any-socket');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            // 监听弹幕信息
+            stompClient.subscribe('/topic/live', function (response) {
+                var data = JSON.parse(response.body);
+                var message = {
+                    style: "top: " + (Math.random() * 300) + "px",
+                    avatar: data.avatar,
+                    content: data.content,
+                    id: "msg" + app.id
+                };
+                app.id++;
+
+                var node = '<div class="chip chip-md orange darken-2 white-text selected" id="{id}" style="{style}"><img src="{avatar}"> {content}</div>'.format(message);
+                var element = $(node);
+                $("#main").prepend(element);
+
+                document.getElementById(message.id).addEventListener("webkitAnimationEnd", function(){
+                    $("#" + message.id).remove();
+                });
+
+            });
+        });
+    }
+
+    /**
+     * 初始化信息
+     */
+    $(function () {
+        connect();
+    });
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            id: 0,
+            user: [[${user}]],
+            content: null,
+            messages: []         // 弹幕信息
+        },
+        methods: {
+            // 发送弹幕
+            sendMessage: function () {
+                if (app.content == null || app.content.trim().length === 0){
+                    return;
+                }
+                stompClient.send("/app/live", {}, app.content);
+                app.content = null;
+            }
+        }
+    })
+
+</script>
+
+</body>
+
+</html>

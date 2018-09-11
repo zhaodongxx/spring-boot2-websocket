@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>博客</title>
+    <!-- Font Awesome -->
+    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.css" rel="stylesheet">
+    <!-- Material Design Bootstrap -->
+    <link href="/css/mdb.css" rel="stylesheet">
+    <link href="/css/home.css" rel="stylesheet">
+</head>
+
+<body class="creative-lp">
+
+<!-- Navigation & Intro -->
+<header>
+
+    <!-- Navbar -->
+    <nav th:replace="~{common :: nav}"></nav>
+
+</header>
+<!-- Navigation & Intro -->
+
+<!-- Main content -->
+<main style="padding-top: 70px" id="app">
+
+    <!-- Intro Section -->
+    <div class="view jarallax" data-jarallax='{"speed": 0.2}' style="background-position: top; background-image: url(https://upload-images.jianshu.io/upload_images/3424642-8c4dc0dda3e859a2.png); ">
+        <div class="full-bg-img">
+            <div class="mask rgba-black-light">
+                <div class="container flex-center">
+                    <div class="row pt-5 mt-3">
+                        <div class="col-md-12 wow fadeIn mb-3">
+                            <div class="text-center white-text">
+                                <ul class="list-unstyled ">
+                                    <li >
+                                        <div class="py-5"></div>
+                                        <div class="py-5"></div>
+                                        <!--<h1 class="display-4 mt-md-5 mt-lg-0 mb-5 font-weight-bold white-text wow fadeIn" data-wow-delay="0.3s">-->
+                                            <!--<strong>微服务 丶 容器化 丶 DevOps</strong>-->
+                                        <!--</h1>-->
+                                    </li>
+
+                                    <li class="wow fadeIn" data-wow-delay="0.4s">
+                                        <a class="btn pink-gradient btn-rounded btn-lg font-weight-bold" href="#article-box">开启：修行之旅</a>
+                                    </li>
+                                    <li>
+                                        <p class=" description mb-5 wow fadeIn white-text" data-wow-delay="0.4s">
+                                            目前专注微服务、容器化、DevOps等领域
+                                        </p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/Intro-->
+
+    <!--Blog-->
+    <section id="article-box">
+        <div class="container mt-5 pt-3">
+
+            <div class="row" >
+
+                <!--Main listing-->
+                <div class="col-lg-8 col-12 mt-1 mx-lg-4">
+
+                    <!--Section: Classic blog listing-->
+                    <section class="section classic-blog-listing">
+
+                        <!--Grid row-->
+                        <div class="row mb-5" th:each="article : ${jianshu.articles}">
+                            <!--Grid column-->
+                            <div class="col-md-12 text-center">
+
+                                <!--Image-->
+                                <div class="view overlay rounded z-depth-1 mb-3">
+                                    <img th:src="${article.cover}" class="img-fluid">
+                                    <a th:href="'/p/' + ${article.id}" target="_blank">
+                                        <div class="mask rgba-white-slight"></div>
+                                    </a>
+                                </div>
+
+                                <!--Excerpt-->
+                                <!--<a href="" class="">-->
+                                    <!--<h5>-->
+                                        <!--<span class="badge badge-pill primary-color">Tag</span>-->
+                                    <!--</h5>-->
+                                <!--</a>-->
+
+                                <h2 class="text-center font-weight-bold dark-grey-text py-3">
+                                    <strong th:text="${article.title}"></strong>
+                                </h2>
+                                <!--Post data-->
+                                <div class="post-data text-center pb-3 grey-text">
+                                    <h6>
+                                        发布时间 [[ ${article.time} ]]
+                                    </h6>
+                                </div>
+
+                                <p class="dark-grey-text" th:text="${article.description}">
+                                </p>
+
+                                <div class="text-center pb-2">
+                                    <a class="btn btn-white btn-rounded btn-md orange-text font-weight-bold wow fadeIn waves-effect waves-light" th:href="'/p/' + ${article.id}" target="_blank">阅读全文</a>
+                                </div>
+
+                            </div>
+                            <!--Grid column-->
+                        </div>
+                        <!--Grid row-->
+
+                        <!-- 加载更多 -->
+                        <div class="row mb-5" v-for="article in articles">
+                            <div class="col-md-12 text-center">
+
+                                <div class="view overlay rounded z-depth-1 mb-3">
+                                    <img v-bind:src="article.cover" class="img-fluid">
+                                    <a v-bind:href="'/p/' + article.id" target="_blank">
+                                        <div class="mask rgba-white-slight"></div>
+                                    </a>
+                                </div>
+
+                                <h2 class="text-center font-weight-bold dark-grey-text py-3">
+                                    <strong v-html="article.title"></strong>
+                                </h2>
+                                <div class="post-data text-center pb-3 grey-text">
+                                    <h6>
+                                        发布时间 {{article.time}}
+                                    </h6>
+                                </div>
+
+                                <p class="dark-grey-text" v-html="article.description">
+                                </p>
+
+                                <div class="text-center pb-2">
+                                    <a class="btn btn-white btn-rounded btn-md orange-text font-weight-bold wow fadeIn waves-effect waves-light" v-bind:href="'/p/' + article.id" target="_blank">阅读全文</a>
+                                </div>
+
+                            </div>
+                        </div>
+                        <!-- /加载更多 -->
+
+                    </section>
+                    <!--Section: Classic blog listing-->
+
+                    <!-- 进度条 -->
+                    <div class="row mb-5" v-if="loading">
+                        <!--Big blue-->
+                        <div class="preloader-wrapper big active" style="margin: 0 auto">
+                            <div class="spinner-layer spinner-yellow-only">
+                                <div class="circle-clipper left">
+                                    <div class="circle"></div>
+                                </div>
+                                <div class="gap-patch">
+                                    <div class="circle"></div>
+                                </div>
+                                <div class="circle-clipper right">
+                                    <div class="circle"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!--Main listing-->
+
+                <!--Sidebar-->
+                <div class="col-lg-3 col-md-3 px-4">
+
+                    <!--Author-->
+                    <section class="mb-4">
+
+                        <hr>
+                        <p class="font-weight-bold dark-grey-text text-center spacing">
+                            <strong th:text="${jianshu.author.nickname}"></strong>
+                        </p>
+                        <hr>
+
+                        <!--Avatar-->
+                        <div class="d-flex justify-content-center mt-4">
+                            <img th:src="${jianshu.author.avatar}" class="img-fluid rounded img-author z-depth-1">
+                        </div>
+
+                        <!--Description-->
+                        <p class="mt-3 dark-grey-text font-small text-center">
+                            <em th:text="${jianshu.author.description}"></em>
+                        </p>
+
+                        <ul class="list-unstyled inline-ul circle-icons list-unstyled flex-center">
+                            <!--qq-->
+                            <li>
+                                <a class="fb-ic mx-3" th:if="${custom.qq}"
+                                   th:href="'http://wpa.qq.com/msgrd?v=3&uin='+ ${custom.qq} +'&site=qq&menu=yes'" target="_blank">
+                                    <i class="fa fa-qq"> </i>
+                                </a>
+                            </li>
+                            <!--github-->
+                            <li>
+                                <a class="tw-ic mx-3" th:if="${custom.githubUrl}" th:href="${custom.githubUrl}" target="_blank">
+                                    <i class="fa fa-github"> </i>
+                                </a>
+                            </li>
+                            <!--gitee-->
+                            <li>
+                                <a class="gplus-ic mx-3"  th:if="${custom.gitlabUrl}" th:href="${custom.gitlabUrl}" target="_blank">
+                                    <i class="fa fa-gitlab"> </i>
+                                </a>
+                            </li>
+                        </ul>
+
+                    </section>
+                    <!--Author-->
+
+                    <!--Title-->
+                    <hr>
+                    <p class="font-weight-bold dark-grey-text text-center spacing">
+                        <strong>专栏</strong>
+                    </p>
+                    <hr>
+                    <!--Section: Recent posts-->
+                    <section class="section mb-5">
+
+                        <div class="post-border" th:each="collection : ${jianshu.ownCollections}">
+                            <div class="row mt-4">
+                                <div class="col-5">
+                                    <div class="view overlay z-depth-1 rounded mb-3">
+                                        <img th:src="${collection.avatar}" class="img-fluid" alt="Post">
+                                        <a>
+                                            <div class="mask rgba-white-slight"></div>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-7 mb-1">
+                                    <div class="">
+                                        <p class="mb-1">
+                                            <a th:href="'/c/' + ${collection.id}" class="text-hover font-weight-bold" th:text="${collection.title}"></a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="post-border" v-for="collection in collections">
+                            <div class="row mt-4">
+                                <div class="col-5">
+                                    <div class="view overlay z-depth-1 rounded mb-3">
+                                        <img v-bind:src="collection.avatar" class="img-fluid" alt="Post">
+                                        <a>
+                                            <div class="mask rgba-white-slight"></div>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-7 mb-1">
+                                    <div class="">
+                                        <p class="mb-1">
+                                            <a v-bind:href="'/c/' + collection.id" class="text-hover font-weight-bold" v-html="collection.title"></a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4" v-if="hasMoreCollection">
+                            <h6 class="" >
+                                <a class="text-primary" @click="onMoreCollection"> 展开更多 >> </a>
+                            </h6>
+                        </div>
+
+                    </section>
+                    <!--Section: Recent posts-->
+
+                    <!--Title-->
+                    <hr>
+                    <p class="font-weight-bold dark-grey-text text-center spacing">
+                        <strong>分类</strong>
+                    </p>
+                    <hr>
+
+                    <!--Archive-->
+                    <section class="archive mb-5">
+
+                        <!--Grid row-->
+                        <div class="row">
+
+                            <!--Grid column-->
+                            <div class="col-md-12 text-center">
+
+                                <!--List-->
+                                <ul class="list-unstyled  mt-3">
+                                    <li th:each="notebook : ${jianshu.notebooks}">
+                                        <h6 class="">
+                                            <a th:href="'/nb/' + ${notebook.id}" class="dark-grey-text" th:text="${notebook.name}"></a>
+                                        </h6>
+                                    </li>
+
+                                    <li v-for="nb in nbs">
+                                        <h6 class="">
+                                            <a v-bind:href="'/nb/' + nb.id" class="dark-grey-text" v-html="nb.name"></a>
+                                        </h6>
+                                    </li>
+
+                                    <li v-if="hasMoreNotebook">
+                                        <h6 class="" >
+                                            <a class="text-primary" @click="onMoreNotebook"> 展开更多 >> </a>
+                                        </h6>
+                                    </li>
+                                </ul>
+                                <!--List-->
+
+                            </div>
+                            <!--Grid column-->
+
+                        </div>
+                        <!--Grid row-->
+
+                    </section>
+                    <!--Archive-->
+
+                </div>
+                <!--Sidebar-->
+
+            </div>
+
+        </div>
+
+    </section>
+    <!--/Blog-->
+
+</main>
+<!-- Main content -->
+
+<!-- 返回顶部 -->
+<section >
+    <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
+        <a class="btn-floating btn-lg purple-gradient" style="display:none;" id="goTop">
+            <i class="fa fa-arrow-up" aria-hidden="true"></i>
+        </a>
+    </div>
+</section>
+
+<!-- 网站底部 -->
+<footer th:replace="~{common :: footer}"></footer>
+<!-- /网站底部 -->
+
+<!-- JQuery -->
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<!-- Bootstrap core JavaScript -->
+<script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<!-- MDB core JavaScript -->
+<script src="https://cdn.bootcss.com/mdbootstrap/4.5.0/js/mdb.min.js"></script>
+<script src="https://cdn.bootcss.com/underscore.js/1.8.3/underscore-min.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.5.3/vue.min.js"></script>
+<script>
+    //Animation init
+    new WOW().init();
+
+    // 返回顶部
+    $(function(){
+        $(window).scroll(function(){
+            if($(window).scrollTop() > 500){
+                $("#goTop").fadeIn(200);
+            }
+            else{
+                $("#goTop").hide(200);
+            }
+        });
+        $("#goTop").click(function(){
+            $('html,body').animate({'scrollTop': 0 }, 500);
+        });
+    });
+
+    // 监听滚动事件
+    window.addEventListener('scroll', _.throttle(function () {
+        if (window.pageYOffset + window.innerHeight >= document.documentElement.scrollHeight ){
+            if (!app.end){
+                app.loading = true;
+                app.page++;
+                var api =  window.location.pathname + "/" + app.page;
+                $.get(api, function (response) {
+                    if (response.code === 0){
+                        var list = response.data.articles;
+                        for(var i = 0; i <list.length; i++){
+                            app.articles.push(list[i]);
+                        }
+                        if (list.length < 10){
+                            app.end = true;
+                        }
+                    }
+                    app.loading = false;
+                })
+            }
+        }
+    }, 500), false);
+
+    // 博客列表
+    var app = new Vue({
+        el: '#app',
+        data: {
+            page: 1,
+            articles: [],
+            end: [[ ${jianshu.articles.size() < 10}]],
+            loading: false,
+            hasMoreNotebook: [[ ${jianshu.notebookTotalPages > 1} ]],
+            hasMoreCollection: [[ ${jianshu.ownCollectionTotalPages > 1} ]],
+            notebookPage: 2,
+            collectionPage: 2,
+            nbs: [],
+            collections: []
+        },
+        methods: {
+            onMoreNotebook: function () {
+                var api =  "/nbs/" + this.notebookPage;
+                $.get(api, function (response) {
+                    if (response.code === 0){
+                        var list = response.data.notebooks;
+                        for(var i = 0; i <list.length; i++){
+                            app.nbs.push(list[i]);
+                        }
+                        if (list.length < 10){
+                            app.hasMoreNotebook = false;
+                        }
+                    }
+                });
+                this.notebookPage++;
+            },
+            onMoreCollection: function (){
+                var api =  "/cs/" + this.collectionPage;
+                $.get(api, function (response) {
+                    if (response.code === 0){
+                        var list = response.data.ownCollections;
+                        for(var i = 0; i <list.length; i++){
+                            app.collections.push(list[i]);
+                        }
+                        if (list.length < 10){
+                            app.hasMoreCollection = false;
+                        }
+                    }
+                });
+                this.collectionPage++;
+            }
+        }
+    })
+</script>
+
+</body>
+
+</html>

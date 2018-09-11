@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- 顶部导航 -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top scrolling-navbar white" th:fragment="nav">
+    <div class="container">
+        <a class="navbar-brand font-weight-bold title" href="/">ANOYI</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02"
+                aria-controls="navbarTogglerDemo02"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <i class="fa fa-align-justify" aria-hidden="true"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+            <ul class="list-unstyled navbar-nav mr-auto">
+                <li class="nav-item ml-4">
+                    <a class="nav-link title" href="/" data-offset="90">主页</a>
+                </li>
+
+                <li class="nav-item ml-4">
+                    <a class="nav-link title" href="/blog" data-offset="90">博客</a>
+                </li>
+                <li class="nav-item ml-4">
+                    <a class="nav-link title" href="/book" data-offset="90">书架</a>
+                </li>
+                <li class="nav-item dropdown ml-4">
+                    <a class="nav-link dropdown-toggle title" id="navbarDropdownMenuLink2" data-toggle="dropdown"
+                       aria-haspopup="true"
+                       aria-expanded="false">场景 </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="/app/chat">即时通信</a>
+                        <a class="dropdown-item" href="/app/live">直播弹幕</a>
+                    </div>
+                </li>
+                <li class="nav-item ml-4">
+                    <a class="nav-link title" href="/cncf" data-offset="90">Cloud Native</a>
+                </li>
+                <li class="nav-item ml-4">
+                    <a class="nav-link title" href="/about" data-offset="90">About</a>
+                </li>
+            </ul>
+            <!-- Social Icon  -->
+            <ul class="navbar-nav nav-flex-icons">
+                <li class="nav-item ml-3" th:unless="${#httpServletRequest.remoteUser}">
+                    <a class="btn pink-gradient btn-rounded btn-sm font-weight-bold" href="/login" data-offset="90">登录/注册</a>
+                </li>
+
+                <li class="nav-item ml-3" th:if="${#httpServletRequest.remoteUser}">
+                    <a class="btn pink-gradient btn-rounded btn-sm font-weight-bold" href="/logout"
+                       data-offset="90">退出登录</a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- 网站底部 -->
+<footer class="page-footer text-center text-md-left unique-color-dark pt-0" th:fragment="footer">
+    <div style="background-color: #f95169;">
+        <div class="container">
+
+            <!--Grid row-->
+            <div class="row py-4 d-flex align-items-center">
+
+                <!--Grid column-->
+                <div class="col-md-6 col-lg-5 text-center text-md-left mb-md-0">
+                    <h6 class="mb-0 white-text">通过社交网络联系我们!</h6>
+                </div>
+                <!--Grid column-->
+
+                <!--Grid column-->
+                <div class="col-md-6 col-lg-7 text-center text-md-right">
+                    <a class="p-2 m-2 fa-lg fb-ic ml-0" th:if="${custom.qq}"
+                       th:href="'http://wpa.qq.com/msgrd?v=3&uin='+ ${custom.qq} +'&site=qq&menu=yes'" target="_blank">
+                        <i class="fa fa-qq white-text mr-lg-4"> </i>
+                    </a>
+                    <a class="p-2 m-2 fa-lg gplus-ic" th:if="${custom.githubUrl}" th:href="${custom.githubUrl}" target="_blank">
+                        <i class="fa fa-github white-text mr-lg-4"> </i>
+                    </a>
+                    <a class="p-2 m-2 fa-lg li-ic" th:if="${custom.gitlabUrl}" th:href="${custom.gitlabUrl}" target="_blank">
+                        <i class="fa fa-gitlab white-text mr-lg-4"> </i>
+                    </a>
+                </div>
+                <!--Grid column-->
+
+            </div>
+            <!--Grid row-->
+        </div>
+    </div>
+
+    <!-- 版权及备案信息 -->
+    <div class="footer-copyright text-center py-3">
+        <div class="container-fluid">
+            © 2018 Copyright. <a href="http://www.miitbeian.gov.cn/" target="_blank" th:if="${custom.icp}" th:text="${custom.icp}"> </a>
+        </div>
+    </div>
+    <!-- /版权及备案信息 -->
+
+</footer>
+
+</body>
+</html>

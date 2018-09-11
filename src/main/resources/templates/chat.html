@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html class="full-height" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="referrer" content="never">
+    <title>即时通信-场景</title>
+    <!-- Font Awesome -->
+    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.css" rel="stylesheet">
+    <!-- Material Design Bootstrap -->
+    <link href="/css/mdb.css" rel="stylesheet">
+    <link href="/css/home.css" rel="stylesheet">
+    <link href="/css/chat.css" rel="stylesheet">
+    <link href="/css/toastr.css" rel="stylesheet">
+
+</head>
+
+<body class="creative-lp">
+
+<!-- Navigation & Intro -->
+<header>
+
+    <!--Intro Section-->
+    <section class="view intro-2">
+        <div class="full-bg-img">
+            <div class="mask rgba-gradient-1">
+                <div class="container flex-center">
+                    <div class="row flex-center">
+
+                        <div id="chat">
+                            <div class="sidebar" style="position: relative">
+                                <div class="m-card">
+                                    <header class="text-left">
+                                        <img class="avatar d-inline" width="40" height="40" alt="Coffce" v-bind:src="user.avatar">
+                                        <p class="name">{{ user.nickname }}</p>
+                                    </header>
+                                    <footer>
+                                        <input class="search" placeholder="search user..." v-model="searchInput">
+                                    </footer>
+                                </div>
+                                <div class="m-list" style="overflow-y: scroll; height: 455px;">
+                                    <!-- 好友列表 -->
+                                    <ul id="user-list">
+                                        <li v-bind:class="session.id == currentSessionId ? 'active text-left mb-0' : 'text-left mb-0'" v-for="session in sessions" v-on:click="changeSession(session.id)" v-show="searchInput === '' || session.user.nickname.indexOf(searchInput) >= 0">
+                                            <img class="avatar d-inline" width="30" height="30" v-bind:src="session.user.avatar"/>
+                                            <p class="name">{{ session.user.nickname }}</p>
+                                            <p class="username" hidden>{{ session.user.username }}</p>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <button class="m-button" @click="onModalShow">
+                                    添加好友
+                                </button>
+                            </div>
+                            <div class="main">
+                                <div class="m-message">
+                                    <!-- 聊天记录 -->
+                                    <ul>
+                                        <li v-for="message in currentMessages">
+                                            <p class="time"><span class="messageTime">{{ message.time }}</span></p>
+                                            <div v-bind:class="message.me ? 'messageContent self text-right' : 'messageContent text-left'">
+                                                <img class="avatar" width="30" height="30" v-bind:src="message.avatar">
+                                                <div class="text">
+                                                    {{ message.content }}
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <!-- 输入框 -->
+                                <div class="m-text">
+                                    <textarea placeholder="按 Ctrl + Enter 发送" v-model="messageInput"> </textarea>
+                                </div>
+                            </div>
+
+                            <div class="modal-mask" v-show="showModal" transition="modal">
+                                <div class="modal-wrapper">
+                                    <div class="modal-container">
+                                        <div class="m-card">
+                                            <footer>
+                                                <input class="search" placeholder="查找用户" v-model="keyword" @keyUp="searchUser">
+                                            </footer>
+                                        </div>
+                                        <div class="m-list" style="overflow-y: scroll; height: 370px;">
+                                            <!-- 在线列表 -->
+                                            <ul style="color: #fff">
+                                                <li v-for="onlineUser in onlineUsers" class="text-left">
+                                                    <img class="avatar d-inline" width="30" height="30" v-bind:src="onlineUser.avatar"/>
+                                                    <p class="name">{{ onlineUser.nickname }}</p>
+                                                    <button class="friend-add" @click="addFriend(onlineUser)"> 添加 </button>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <button class="m-button" @click="onModalClose">
+                                            关闭
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</header>
+<!-- Navigation & Intro -->
+
+<!-- JQuery -->
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<!-- Bootstrap core JavaScript -->
+<script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<!-- MDB core JavaScript -->
+<script src="https://cdn.bootcss.com/mdbootstrap/4.5.0/js/mdb.min.js"></script>
+<script src="https://cdn.bootcss.com/toastr.js/latest/toastr.min.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.5.3/vue.min.js"></script>
+<script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"></script>
+<script src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
+<script>
+    //Animation init
+    new WOW().init();
+</script>
+
+<script>
+    /**
+     * 获取当前时间
+     * @returns {string} 格式 hh:mm
+     */
+    function getNowDate() {
+        var date = new Date();
+        return (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes();
+    }
+
+</script>
+
+<script>
+
+    var app = new Vue({
+        el: '#chat',
+        data: {
+            user: {},               //当前用户信息
+            currentSessionId: 0,    //当前会话ID，对应好友列表顺序
+            messageInput: "",       //输入框的内容 - 消息
+            searchInput: "",        //输入框内容 - 好友搜索
+            keyword: "",          //输入框内容 - 查找用户
+            showModal: false,       //弹出框是否显示
+            sessions: [             //所有会话信息
+                {
+                    id: 0,
+                    num: 0,
+                    user: {
+                        nickname: "AnyIM 小沫",
+                        username: "IM_ROBOT",
+                        avatar: "http://img.hb.aicdn.com/79cf2c86f7c626ae5d135786b912803275fcd0c82423-LJyhZR_fw658"
+                    },
+                    messages: [
+                        {
+                            nickname: "AnyIM 小沫",
+                            username: "IM_ROBOT",
+                            avatar: "http://img.hb.aicdn.com/79cf2c86f7c626ae5d135786b912803275fcd0c82423-LJyhZR_fw658",
+                            me: false,
+                            content: "Hello，我是小茉！你可以随意调侃我哦！ o(>﹏<)o ",
+                            time: getNowDate()
+                        }
+                    ]
+                },
+                {
+                    id: 1,
+                    num: 0,
+                    user: {
+                        nickname: "全服大厅",
+                        username: "IM_ALL",
+                        avatar: "http://upload-images.jianshu.io/upload_images/3424642-655714782ccac90f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+                    },
+                    messages: []
+                }
+            ],
+            onlineUsers: []         //当前在线用户
+        },
+        methods: {
+            //切换会话对象
+            changeSession: function (sessionId) {
+                this.currentSessionId = sessionId;
+                this.sessions[this.currentSessionId].num = 0;
+            },
+            //显示弹出框
+            onModalShow: function(){
+                this.showModal = true;
+                getOnlineUsers();
+            },
+            //隐藏弹出框
+            onModalClose: function () {
+                this.showModal = false;
+            },
+            //添加好友
+            addFriend: function (friend) {
+                for(var i = 0; i < this.onlineUsers.length; i++){
+                    if (this.onlineUsers[i].username === friend.username){
+                        this.onlineUsers.splice(i, 1);
+                    }
+                }
+                addFriend(friend);
+            },
+            //查找好友
+            searchUser: function () {
+                $.post("/api/common/user",
+                    {
+                        keyword: app.keyword
+                    },function (response) {
+                        var list = [];
+                        if (response.code === 0) {
+                            var onlineList = response.data;
+                            for (var i = 0; i < onlineList.length; i++) {
+                                var exist = false;
+                                if (onlineList[i].username === app.user.username) {
+                                    exist = true;
+                                } else {
+                                    for (var j = 0; j < app.sessions.length; j++) {
+                                        if (onlineList[i].username === app.sessions[j].user.username) {
+                                            exist = true;
+                                        }
+                                    }
+                                }
+                                if (!exist) {
+                                    list.push(onlineList[i]);
+                                }
+                            }
+                            app.onlineUsers = list;
+                        }
+                    }
+                );
+            }
+        },
+        computed: {
+            currentMessages: function(){
+                return this.sessions[this.currentSessionId].messages;
+            },
+            sendMessage: function(){
+                return '{"content":"' + this.messageInput + '","receiver":"' + this.sessions[this.currentSessionId].user.username + '"}';
+            },
+            sessionMap: function(){
+                var map = {};
+                for (var i = 0; i < this.sessions.length; i++){
+                    map[this.sessions[i].user.username.toString()] = i;
+                }
+                return map;
+            }
+        }
+    })
+</script>
+
+<script>
+
+    /**
+     * 获取用户信息
+     */
+    function user(){
+        $.get("/api/userInfo", function(response){
+            if (response.code === 0){
+                app.user = response.data;
+            }
+        });
+    }
+
+    /**
+     * 创建 Session
+     */
+    function createSession(nickname, username, avatar) {
+        return {
+            id: app.sessions.length,
+            num: 0,
+            user: {
+                nickname: nickname,
+                username: username,
+                avatar: avatar
+            },
+            messages: []
+        };
+    }
+
+    // stomp 客户端
+    var stompClient = null;
+
+    /**
+     * 建立 WebSocket 连接
+     */
+    function connect() {
+        var socket = new SockJS('/any-socket');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            stompClient.subscribe('/topic/notice', function (message) {
+                saveMessageToLocal(message, true);
+            });
+            stompClient.subscribe('/user/topic/chat', function (message) {
+                saveMessageToLocal(message, false);
+            });
+        });
+    }
+
+    /**
+     * 将收到的消息存储在本地
+     */
+    function saveMessageToLocal(response, notice) {
+        var data = JSON.parse(response.body);
+        var message = {
+            nickname: data.nickname,
+            username: data.username,
+            avatar: data.avatar,
+            me: false,
+            content: data.content,
+            time: data.sendTime
+        };
+        var sessionId = app.sessionMap[message.username];
+        message.me = (app.user.username === message.username);
+        if (notice){
+            app.sessions[1].messages.push(message);
+        }else{
+            if (app.sessions[sessionId]){
+                app.sessions[sessionId].messages.push(message);
+            }else {
+                var session = createSession(message.nickname, message.username, message.avatar);
+                session.messages.push(message);
+                app.sessions.push(session);
+            }
+        }
+    }
+
+    /**
+     * 获取随机的在线用户
+     */
+    function getOnlineUsers(){
+        $.get("/api/common/online", function (response) {
+            var list = [];
+            if (response.code === 0){
+                var onlineList = response.data;
+                for(var i = 0; i < onlineList.length; i++){
+                    var exist = false;
+                    if(onlineList[i].username === app.user.username){
+                        exist = true;
+                    }else{
+                        for (var j = 0; j < app.sessions.length; j++){
+                            if (onlineList[i].username === app.sessions[j].user.username){
+                                exist = true;
+                            }
+                        }
+                    }
+                    if (!exist){
+                        list.push(onlineList[i]);
+                    }
+                }
+                app.onlineUsers = list;
+            }
+        })
+    }
+
+    /**
+     * 获取好友列表
+     */
+    function getFriendList() {
+        $.get("/api/friend", function(response){
+            if (response.code === 0){
+                var friends = response.data;
+                for (var i = 0; i < friends.length; i++){
+                    var session = createSession(friends[i].nickname, friends[i].username, friends[i].avatar);
+                    app.sessions.push(session);
+                }
+            }
+        })
+    }
+
+    /**
+     * 添加好友
+     */
+    function addFriend(friend) {
+        $.post("/api/friend",
+            {
+                friendUsername: friend.username
+            },
+            function(response){
+                if (response.code === 0){
+                    var session = createSession(friend.nickname, friend.username, friend.avatar);
+                    app.sessions.push(session);
+                }
+            }
+        )
+    }
+
+    /**
+     * 初始化信息
+     */
+    $(function () {
+        user();
+        connect();
+        getFriendList();
+
+        // 发送消息
+        document.onkeydown = function (t) {
+            if (t.ctrlKey && 13 === t.keyCode) {
+                if (app.messageInput.trim().length > 0){
+                    stompClient.send("/app/chat", {}, app.sendMessage);
+                    var message = {
+                        nickname: app.user.nickname,
+                        username: app.user.username,
+                        avatar: app.user.avatar,
+                        me: true,
+                        content: app.messageInput,
+                        time: getNowDate()
+                    };
+                    if (app.currentSessionId !== 1){
+                        app.sessions[app.currentSessionId].messages.push(message);
+                    }
+                    app.messageInput = "";
+                }
+            }
+            return true;
+        };
+    });
+
+</script>
+</body>
+
+</html>

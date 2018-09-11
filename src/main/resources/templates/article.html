@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="referrer" content="never">
+    <title th:text="${article.title}"></title>
+    <!-- Font Awesome -->
+    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.css" rel="stylesheet">
+    <!-- Material Design Bootstrap -->
+    <link href="/css/mdb.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+    <link href="/css/toastr.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/languages/java.min.js"></script>
+    <script src="https://cdn.bootcss.com/highlight.js/9.11.0/languages/yaml.min.js"></script>
+    <script src="https://cdn.bootcss.com/clipboard.js/2.0.0/clipboard.min.js"></script>
+    <link href="https://cdn.bootcss.com/highlight.js/9.12.0/styles/atom-one-light.min.css" rel="stylesheet">
+</head>
+
+<body class="creative-lp">
+
+<header>
+
+    <!-- 顶部导航 -->
+    <nav th:replace="~{common :: nav}"></nav>
+
+    <!-- 文章配图 -->
+    <section>
+        <div class="">
+            <img src="https://upload-images.jianshu.io/upload_images/3424642-4db5ec639d0eb348.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
+                 style="width: 100%">
+        </div>
+    </section>
+
+</header>
+
+<!-- 正文 -->
+<main>
+
+    <div class="container-fluid mb-5">
+
+        <!-- 文章 -->
+        <div class="row justify-content-around" style="margin-top: -100px;">
+
+            <!--Grid column-->
+            <div class="col-md-10 px-lg-5">
+                <!--Card-->
+                <div class="card pb-5 mx-md-3">
+                    <div class="card-body">
+
+                        <div class="container">
+
+                            <!--Section heading-->
+                            <h1 class="section-heading h1 pt-4 mb-3">
+                                <strong th:text="${article.title}"></strong>
+                            </h1>
+
+                            <div class="row">
+                                <div class="col-md-12 col-xl-12 d-flex justify-content-center">
+                                    <p class="font-small dark-grey-text mb-1">
+                                        <strong>作者：</strong> [[${article.authorName}]]</p>
+                                    <p class="font-small grey-text mb-0 ml-3">
+                                        <i class="fa fa-clock-o dark-grey-text"></i> [[${article.updateTime}]] </p>
+                                </div>
+                            </div>
+
+                            <!--Grid row-->
+                            <div class="row fmt row pt-lg-5 pt-3">
+
+                                <!--Grid column-->
+                                <div class="col-md-12 col-xl-12" th:utext="${article.content}">
+
+                                </div>
+
+                                <!--/Grid column-->
+
+                            </div>
+                            <!--/Grid row-->
+
+                            <div class="row my-5">
+
+                                <!--Grid column-->
+                                <div class="col-md-12 text-center">
+
+                                    <button type="button"
+                                            class="btn blue-gradient btn-rounded waves-effect waves-light"
+                                            data-toggle="modal" data-target="#shareModal">
+                                        <i class="fa fa-facebook left"></i> 分享
+                                    </button>
+                                    <!--Twitter-->
+                                    <button type="button"
+                                            class="btn peach-gradient btn-rounded waves-effect waves-light" data-toggle="modal" data-target="#rewardModal">
+                                        <i class="fa fa-cny left"></i> 打赏
+                                    </button>
+                                    <!--Google +-->
+                                    <a type="button" class="btn purple-gradient btn-rounded waves-effect waves-light"
+                                       href="#commentSection" >
+                                        <i class="fa fa-comments-o left"></i> 评论</a>
+
+                                </div>
+                                <!--Grid column-->
+
+                            </div>
+
+                            <hr class="mt-5">
+
+                            <section>
+
+                                <!--Main wrapper-->
+                                <div class="comments-list text-center text-md-left">
+                                    <div class="section-heading mt-5 mb-5">
+                                        <h4 class="font-weight-bold mt-5 mb-5 text-center">
+                                            <strong>评论</strong>
+                                        </h4>
+                                    </div>
+                                    <!--First row-->
+                                    <div class="row mb-4" th:each="comment : ${comments}">
+                                        <!--Image column-->
+                                        <div class="col-sm-2 col-12 mb-md-0 mb-3">
+                                            <img th:src="${comment.avatar} ? ${comment.avatar} : 'https://mdbootstrap.com/img/Photos/Avatars/img%20(8).jpg'"
+                                                 class="avatar rounded-circle z-depth-1-half">
+                                        </div>
+                                        <!--/.Image column-->
+                                        <!--Content column-->
+                                        <div class="col-sm-10 col-12">
+                                            <a>
+                                                <h4 class="font-weight-bold" th:text="${comment.name}"></h4>
+                                            </a>
+                                            <div class="mt-2">
+                                                <ul class="list-unstyled ">
+                                                    <li class="comment-date">
+                                                        <i class="fa fa-clock-o"></i> [[
+                                                        ${#dates.format(comment.createTime, 'yyyy-MM-dd hh:mm')} ]]
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <p class="grey-text" th:text="${comment.content}"></p>
+                                        </div>
+                                        <!--/.Content column-->
+                                    </div>
+                                    <!--/.First row-->
+                                </div>
+                                <!--/.Main wrapper-->
+
+                            </section>
+
+                            <section class="mb-4 wow fadeIn" data-wow-delay="0.2s"
+                                     style="visibility: visible; animation-name: fadeIn; animation-delay: 0.2s;"
+                                     id="commentSection">
+
+                                <!--Grid row-->
+                                <div class="row" th:unless="${user}">
+
+                                    <!--Grid column-->
+                                    <div class="col-lg-6 col-md-6 mb-3">
+
+                                        <div class="input-group md-form form-sm form-3 pl-0">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text white black-text">昵称</span>
+                                            </div>
+                                            <input type="text" class="form-control mt-0 black-border rgba-white-strong"
+                                                   placeholder="Name" aria-describedby="nickname" id="nickname">
+                                        </div>
+
+                                    </div>
+                                    <!--Grid column-->
+
+                                    <!--Grid column-->
+                                    <div class="col-lg-6 col-md-6 mb-3">
+
+                                        <div class="input-group md-form form-sm form-3 pl-0">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text white black-text">邮箱</span>
+                                            </div>
+                                            <input type="text" class="form-control mt-0 black-border rgba-white-strong"
+                                                   placeholder="Email" aria-describedby="email" id="email">
+                                        </div>
+
+                                    </div>
+                                    <!--Grid column-->
+
+                                </div>
+                                <!--Grid row-->
+
+                                <!--Grid row-->
+                                <div class="row">
+
+                                    <div class="col-12 mt-1">
+                                        <div class="form-group basic-textarea rounded-corners shadow-textarea">
+
+                                            <textarea class="form-control" id="content" rows="5"
+                                                      placeholder="评论内容..."></textarea>
+                                        </div>
+
+                                        <div class="text-right">
+                                            <img th:src="${user.avatar}" class="avatar rounded-circle z-depth-1-half"
+                                                 th:if="${user}" style="max-width: 50px;">
+                                            <button class="btn pink-gradient btn-rounded waves-effect waves-light"
+                                                    onclick="submitComment()">提交评论
+                                            </button>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <!--Grid row-->
+
+                            </section>
+
+
+                        </div>
+                        <!--Grid column-->
+
+                    </div>
+                    <!--Grid row-->
+
+                </div>
+                <!--/Card-->
+
+            </div>
+            <!--/Grid column-->
+
+        </div>
+        <!-- /文章 -->
+    </div>
+
+</main>
+<!-- /正文 -->
+
+<!-- 分享 -->
+<div class="modal fade bottom" id="shareModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-frame modal-bottom" role="document">
+        <!--Content-->
+        <div class="modal-content">
+            <!--Body-->
+            <div class="modal-body">
+                <div class="row d-flex justify-content-center align-items-center">
+
+                    <!-- Material input -->
+                    <div class="col-sm-12">
+                        <div class="md-form pt-3 pr-2 text-center">
+                            <input type="text" class="form-control text-center" id="shareContent">
+                            <button type="button" class="btn btn-outline-primary btn-rounded waves-effect shareCopy" data-clipboard-target="#shareContent">复制
+                            </button>
+                            <button type="button" class="btn btn-outline-warning btn-rounded waves-effect"
+                                    data-dismiss="modal">取消
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!--/.Content-->
+    </div>
+</div>
+
+<!-- 打赏 -->
+<div class="modal fade right" id="rewardModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+    <div class="modal-dialog modal-notify modal-info" role="document">
+        <!--Content-->
+        <div class="modal-content">
+            <!--Header-->
+            <div class="modal-header">
+                <p class="heading lead">支持作者</p>
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="white-text">&times;</span>
+                </button>
+            </div>
+
+            <!--Body-->
+            <div class="modal-body">
+                <div class="text-center">
+
+                    <div class="row">
+                        <div class="col-md-6" th:each="rewardImage : ${custom.rewardImages}">
+                            <div class="justify-content-center mb-3" >
+                                <img th:src="${rewardImage}" class="img-fluid rounded z-depth-1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <kbd th:text="${custom.rewardDesc}"></kbd>
+                    </div>
+                </div>
+            </div>
+
+            <!--Footer-->
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-outline-danger waves-effect" data-dismiss="modal">残忍离开</button>
+            </div>
+        </div>
+        <!--/.Content-->
+    </div>
+
+</div>
+
+<!-- 放大图片 -->
+<div class="modal fade top show" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-full-height modal-top" role="document" style="height: 100%">
+        <div class="modal-content" style="height: 100%; background-color: #0d0d0d">
+
+            <div class="modal-body" style=" display: flex;  align-items: center; justify-content: center;">
+
+                <div>
+                    <img src="" alt="" id="originImage" style="max-width: 100%">
+                </div>
+
+                <div  style="position: absolute; top: 5px; right: 5px">
+                    <a href="" class="btn pink-gradient btn-rounded btn-sm font-weight-bold " id="originImageTarget" target="_blank">
+                        查看原图
+                    </a>
+                    <a type="button" class="btn pink-gradient btn-rounded btn-sm font-weight-bold" data-dismiss="modal" aria-label="Close" >
+                        关闭
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- 返回顶部 -->
+<section >
+    <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
+        <a class="btn-floating btn-lg purple-gradient" style="display:none;" id="goTop">
+            <i class="fa fa-arrow-up" aria-hidden="true"></i>
+        </a>
+    </div>
+</section>
+
+<!-- 网站底部 -->
+<footer th:replace="~{common :: footer}"></footer>
+<!-- /网站底部 -->
+
+<!-- JQuery -->
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<!-- Bootstrap core JavaScript -->
+<script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<!-- MDB core JavaScript -->
+<script src="https://cdn.bootcss.com/mdbootstrap/4.5.0/js/mdb.min.js"></script>
+<script src="https://cdn.bootcss.com/toastr.js/latest/toastr.min.js"></script>
+<script th:inline="javascript">
+
+    //Animation init
+    new WOW().init();
+
+    $("#shareContent").val(location.href + '    ' + [[ ${article.title} ]]);
+
+    // 返回顶部
+    $(function(){
+        $(window).scroll(function(){
+            if($(window).scrollTop() > 500){
+                $("#goTop").fadeIn(200);
+            }
+            else{
+                $("#goTop").hide(200);
+            }
+        });
+        $("#goTop").click(function(){
+            $('html,body').animate({'scrollTop': 0 }, 500);
+        });
+    });
+
+    // 提交评论
+    function submitComment() {
+
+        var nickname = $("#nickname");
+        var email = $("#email");
+        var content = $("#content");
+
+        $.post("/api/common/comment", {
+            articleId: [[${article.articleId}]],
+            name: nickname.val(),
+            email: email.val(),
+            content: content.val()
+        }, function (response) {
+            if (response.code === 0) {
+                nickname.val('');
+                email.val('');
+                content.val('');
+                toastr.success("评论成功，等待系统审核！");
+            }
+        });
+    }
+
+    // 复制分享内容
+    var clipboard = new ClipboardJS('.shareCopy');
+    clipboard.on('success', function(e) {
+        toastr.success("复制成功！");
+    });
+    clipboard.on('error', function(e) {
+        toastr.success("复制失败，当前浏览器不支持！");
+    });
+
+    // 代码高亮
+    hljs.initHighlightingOnLoad();
+
+    // 放大图片
+    $(".image-view").click(function(){
+        var imageUrl = $(this).children().attr("src");
+        $("#originImage").attr("src", imageUrl);
+        $("#originImageTarget").attr("href", imageUrl);
+        $('#imageModal').modal('show');
+    });
+
+</script>
+
+</body>
+</html>

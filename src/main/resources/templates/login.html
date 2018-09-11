@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html class="full-height" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>登录 / 注册</title>
+    <!-- Font Awesome -->
+    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.css" rel="stylesheet">
+    <!-- Material Design Bootstrap -->
+    <link href="/css/mdb.css" rel="stylesheet">
+    <link href="/css/home.css" rel="stylesheet">
+    <link href="/css/chat.css" rel="stylesheet">
+    <link href="/css/toastr.css" rel="stylesheet">
+    <style>
+        .intro-2 {
+            background: url("https://upload-images.jianshu.io/upload_images/3424642-29b5a605c230168b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240")no-repeat center center;
+            background-size: cover;
+        }
+
+        .card {
+            background-color: rgba(229, 228, 255, 0.2);
+        }
+
+        .md-form label {
+            color: #ffffff;
+        }
+
+        h6 {
+            line-height: 1.7;
+        }
+
+        @media (max-width: 740px) {
+            .full-height,
+            .full-height body,
+            .full-height header,
+            .full-height header .view {
+                height: 750px;
+            }
+        }
+
+        @media (min-width: 741px) and (max-height: 638px) {
+            .full-height,
+            .full-height body,
+            .full-height header,
+            .full-height header .view {
+                height: 750px;
+            }
+        }
+
+        .card {
+            margin-top: 30px;
+        }
+
+        .md-form input[type=text]:focus:not([readonly]),
+        .md-form input[type=password]:focus:not([readonly]) {
+            border-bottom: 1px solid #fb5364;
+            box-shadow: 0 1px 0 0 #fb5364;
+        }
+
+        .md-form input[type=text]:focus:not([readonly])+label,
+        .md-form input[type=password]:focus:not([readonly])+label {
+            color: #fb5364;
+        }
+
+        .md-form .form-control {
+            color: #fff;
+        }
+    </style>
+
+</head>
+
+<body class="creative-lp">
+
+<!-- Navigation & Intro -->
+<header id="app">
+
+    <!-- 顶部导航 -->
+    <nav th:replace="~{common :: nav}"></nav>
+
+    <!--Intro Section-->
+    <section class="view intro-2" >
+        <div class="full-bg-img">
+            <div class="mask rgba-indigo-light flex-center">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xl-5 col-lg-6 col-md-10 col-sm-12 mx-auto mt-lg-5">
+
+                            <!-- 登录 -->
+                            <div class="card" id="loginDiv">
+                                <div class="card-body">
+                                    <form th:action="@{/login}" method="post">
+
+                                        <!--Header-->
+                                        <div class="form-header pink-gradient">
+                                            <h3> 终于等到你 </h3>
+                                        </div>
+
+                                        <!--Body-->
+                                        <div class="md-form">
+                                            <i class="fa fa-user prefix white-text"></i>
+                                            <input type="text" id="username" name="username" class="form-control">
+                                            <label for="username">账号</label>
+                                        </div>
+
+                                        <div class="md-form">
+                                            <i class="fa fa-lock prefix white-text"></i>
+                                            <input type="password" id="password" name="password" class="form-control">
+                                            <label for="password">密码</label>
+                                        </div>
+
+                                        <div class="text-center my-4">
+                                            <button class="btn pink-gradient px-5" type="submit">登录</button>
+                                            <button class="btn pink-gradient px-5" type="button" @click="onSignInClick">注册</button>
+                                        </div>
+
+                                    </form>
+
+                                </div>
+                            </div>
+                            <!--/登录-->
+
+                            <!-- 注册 -->
+                            <div class="card" style="display: none" id="signInDiv">
+                                <div class="card-body">
+
+                                    <!--Header-->
+                                    <div class="form-header pink-gradient">
+                                        <h3> 加入组织 </h3>
+                                    </div>
+
+                                    <!--Body-->
+                                    <div class="md-form">
+                                        <i class="fa fa-user prefix white-text"></i>
+                                        <input type="text" id="sign-username" class="form-control">
+                                        <label for="sign-username">账号</label>
+                                    </div>
+
+                                    <div class="md-form">
+                                        <i class="fa fa-lock prefix white-text"></i>
+                                        <input type="password" id="sign-password" class="form-control">
+                                        <label for="sign-password">密码</label>
+                                    </div>
+
+                                    <hr>
+
+                                    <div class="md-form">
+                                        <i class="fa fa-user prefix white-text"></i>
+                                        <input type="text" id="nickname" class="form-control">
+                                        <label for="nickname">昵称</label>
+                                    </div>
+
+                                    <div class="text-center my-4">
+                                        <button class="btn pink-gradient" @click="onRegisterClick">确定注册</button>
+                                        <button class="btn pink-gradient" @click="onLoginClick">返回登录</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <!-- /注册 -->
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</header>
+<!-- Navigation & Intro -->
+
+<!-- JQuery -->
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<!-- Bootstrap core JavaScript -->
+<script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<!-- MDB core JavaScript -->
+<script src="https://cdn.bootcss.com/mdbootstrap/4.5.0/js/mdb.min.js"></script>
+<script src="https://cdn.bootcss.com/toastr.js/latest/toastr.min.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.5.3/vue.min.js"></script>
+<script src="https://cdn.bootcss.com/toastr.js/latest/toastr.min.js"></script>
+<script>
+    //Animation init
+    new WOW().init();
+
+</script>
+
+<script>
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            message: ""
+        },
+        methods: {
+            onSignInClick: function (){
+                $("#sign-username").val('');
+                $("#sign-password").val('');
+                $("#nickname").val('');
+                $("#loginDiv").hide(200);
+                $("#signInDiv").show(300);
+            },
+            onLoginClick: function (){
+                $("#username").val('');
+                $("#password").val('');
+                $("#signInDiv").hide(300);
+                $("#loginDiv").show(300);
+            },
+            onRegisterClick: function () {
+                var username = $("#sign-username").val();
+                var password = $("#sign-password").val();
+                var nickname = $("#nickname").val();
+                if(username.trim().length === 0){
+                    toastr.error("用户名不能为空 !");
+                    return;
+                }
+
+                if(password.trim().length === 0){
+                    toastr.error("密码不能为空 !");
+                    return;
+                }
+
+                if(nickname.trim().length === 0){
+                    toastr.error("昵称不能为空 !");
+                    return;
+                }
+
+                $.post("/api/common/register",
+                    {
+                        "username": username,
+                        "password": password,
+                        "nickname": nickname
+                    },
+                    function (data) {
+                        if (data.code === 0){
+                            toastr.success("注册成功 ！");
+                            $("#signInDiv").hide(300);
+                            $("#loginDiv").show(300);
+                        }else{
+                            toastr.error("注册失败：" + data.data);
+                        }
+                    }
+                );
+            }
+        }
+    })
+
+</script>
+
+</body>
+
+</html>
