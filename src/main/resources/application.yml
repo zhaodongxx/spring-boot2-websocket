@@ -1,0 +1,28 @@
+# set server port
+server:
+  port: 8080  # 配置端口
+  servlet:
+    context-path: /   # 项目启动地址：8080/
+
+
+###   DataSource Config   ###
+spring:
+  profiles:
+    active: dev
+  mvc:
+    view:
+      prefix: classpath:/static/
+      suffix: .html
+  redis:
+      host: 192.168.2.202
+      port: 6379
+      database: 0
+security:
+  user:
+    enabled: true
+    password:
+###   Log Config    ###
+logging:
+  path: ./log/
+  config: classpath:logback-spring.xml
+
