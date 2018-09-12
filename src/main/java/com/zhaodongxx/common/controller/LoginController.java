@@ -4,6 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 /**
  * @author zhaodong zhaodongxx@outlook.com
  * @version v1.0
@@ -14,8 +17,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class LoginController {
 
     @GetMapping("/")
-    public String index() {
-        return "chat";
+    public void index(HttpServletResponse response) throws IOException {
+        response.sendRedirect("/app/chat");
     }
 
     @GetMapping("/login")

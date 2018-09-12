@@ -35,18 +35,22 @@
                             <div class="sidebar" style="position: relative">
                                 <div class="m-card">
                                     <header class="text-left">
-                                        <img class="avatar d-inline" width="40" height="40" alt="Coffce" v-bind:src="user.avatar">
-                                        <p class="name">{{ user.nickname }}</p>
+                                        <img class="avatar d-inline" width="40" height="40" alt="Coffce"
+                                             src="/avatar/user.jpg">
+                                        <p class="name" th:text="${username}"></p>
                                     </header>
                                     <footer>
-                                        <input class="search" placeholder="search user..." v-model="searchInput">
+                                        <input class="search" placeholder="搜索用户..." v-model="searchInput">
                                     </footer>
                                 </div>
-                                <div class="m-list" style="overflow-y: scroll; height: 455px;">
+                                <div class="m-list" style="overflow-y: auto; height: 455px;">
                                     <!-- 好友列表 -->
                                     <ul id="user-list">
-                                        <li v-bind:class="session.id == currentSessionId ? 'active text-left mb-0' : 'text-left mb-0'" v-for="session in sessions" v-on:click="changeSession(session.id)" v-show="searchInput === '' || session.user.nickname.indexOf(searchInput) >= 0">
-                                            <img class="avatar d-inline" width="30" height="30" v-bind:src="session.user.avatar"/>
+                                        <li v-bind:class="session.id == currentSessionId ? 'active text-left mb-0' : 'text-left mb-0'"
+                                            v-for="session in sessions" v-on:click="changeSession(session.id)"
+                                            v-show="searchInput === '' || session.user.nickname.indexOf(searchInput) >= 0">
+                                            <img class="avatar d-inline" width="30" height="30"
+                                                 v-bind:src="session.user.avatar"/>
                                             <p class="name">{{ session.user.nickname }}</p>
                                             <p class="username" hidden>{{ session.user.username }}</p>
                                         </li>
@@ -82,16 +86,19 @@
                                     <div class="modal-container">
                                         <div class="m-card">
                                             <footer>
-                                                <input class="search" placeholder="查找用户" v-model="keyword" @keyUp="searchUser">
+                                                <input class="search" placeholder="查找用户" v-model="keyword"
+                                                       @keyUp="searchUser">
                                             </footer>
                                         </div>
-                                        <div class="m-list" style="overflow-y: scroll; height: 370px;">
+                                        <div class="m-list" style="overflow-y: auto; height: 370px;">
                                             <!-- 在线列表 -->
                                             <ul style="color: #fff">
                                                 <li v-for="onlineUser in onlineUsers" class="text-left">
-                                                    <img class="avatar d-inline" width="30" height="30" v-bind:src="onlineUser.avatar"/>
+                                                    <img class="avatar d-inline" width="30" height="30"
+                                                         v-bind:src="onlineUser.avatar"/>
                                                     <p class="name">{{ onlineUser.nickname }}</p>
-                                                    <button class="friend-add" @click="addFriend(onlineUser)"> 添加 </button>
+                                                    <button class="friend-add" @click="addFriend(onlineUser)"> 添加
+                                                    </button>
                                                 </li>
                                             </ul>
                                         </div>
@@ -145,7 +152,9 @@
     var app = new Vue({
         el: '#chat',
         data: {
-            user: {},               //当前用户信息
+            user: {
+                avatar:'/avatar/user.jpg'
+            },               //当前用户信息
             currentSessionId: 0,    //当前会话ID，对应好友列表顺序
             messageInput: "",       //输入框的内容 - 消息
             searchInput: "",        //输入框内容 - 好友搜索
@@ -191,7 +200,7 @@
                 this.sessions[this.currentSessionId].num = 0;
             },
             //显示弹出框
-            onModalShow: function(){
+            onModalShow: function () {
                 this.showModal = true;
                 getOnlineUsers();
             },
@@ -201,8 +210,8 @@
             },
             //添加好友
             addFriend: function (friend) {
-                for(var i = 0; i < this.onlineUsers.length; i++){
-                    if (this.onlineUsers[i].username === friend.username){
+                for (var i = 0; i < this.onlineUsers.length; i++) {
+                    if (this.onlineUsers[i].username === friend.username) {
                         this.onlineUsers.splice(i, 1);
                     }
                 }
@@ -213,7 +222,7 @@
                 $.post("/api/common/user",
                     {
                         keyword: app.keyword
-                    },function (response) {
+                    }, function (response) {
                         var list = [];
                         if (response.code === 0) {
                             var onlineList = response.data;
@@ -239,15 +248,15 @@
             }
         },
         computed: {
-            currentMessages: function(){
+            currentMessages: function () {
                 return this.sessions[this.currentSessionId].messages;
             },
-            sendMessage: function(){
+            sendMessage: function () {
                 return '{"content":"' + this.messageInput + '","receiver":"' + this.sessions[this.currentSessionId].user.username + '"}';
             },
-            sessionMap: function(){
+            sessionMap: function () {
                 var map = {};
-                for (var i = 0; i < this.sessions.length; i++){
+                for (var i = 0; i < this.sessions.length; i++) {
                     map[this.sessions[i].user.username.toString()] = i;
                 }
                 return map;
@@ -261,9 +270,9 @@
     /**
      * 获取用户信息
      */
-    function user(){
-        $.get("/api/userInfo", function(response){
-            if (response.code === 0){
+    function user() {
+        $.get("/api/userInfo", function (response) {
+            if (response.code === 0) {
                 app.user = response.data;
             }
         });
@@ -319,12 +328,12 @@
         };
         var sessionId = app.sessionMap[message.username];
         message.me = (app.user.username === message.username);
-        if (notice){
+        if (notice) {
             app.sessions[1].messages.push(message);
-        }else{
-            if (app.sessions[sessionId]){
+        } else {
+            if (app.sessions[sessionId]) {
                 app.sessions[sessionId].messages.push(message);
-            }else {
+            } else {
                 var session = createSession(message.nickname, message.username, message.avatar);
                 session.messages.push(message);
                 app.sessions.push(session);
@@ -335,23 +344,23 @@
     /**
      * 获取随机的在线用户
      */
-    function getOnlineUsers(){
+    function getOnlineUsers() {
         $.get("/api/common/online", function (response) {
             var list = [];
-            if (response.code === 0){
+            if (response.code === 0) {
                 var onlineList = response.data;
-                for(var i = 0; i < onlineList.length; i++){
+                for (var i = 0; i < onlineList.length; i++) {
                     var exist = false;
-                    if(onlineList[i].username === app.user.username){
+                    if (onlineList[i].username === app.user.username) {
                         exist = true;
-                    }else{
-                        for (var j = 0; j < app.sessions.length; j++){
-                            if (onlineList[i].username === app.sessions[j].user.username){
+                    } else {
+                        for (var j = 0; j < app.sessions.length; j++) {
+                            if (onlineList[i].username === app.sessions[j].user.username) {
                                 exist = true;
                             }
                         }
                     }
-                    if (!exist){
+                    if (!exist) {
                         list.push(onlineList[i]);
                     }
                 }
@@ -364,10 +373,10 @@
      * 获取好友列表
      */
     function getFriendList() {
-        $.get("/api/friend", function(response){
-            if (response.code === 0){
+        $.get("/api/friend", function (response) {
+            if (response.code === 0) {
                 var friends = response.data;
-                for (var i = 0; i < friends.length; i++){
+                for (var i = 0; i < friends.length; i++) {
                     var session = createSession(friends[i].nickname, friends[i].username, friends[i].avatar);
                     app.sessions.push(session);
                 }
@@ -383,8 +392,8 @@
             {
                 friendUsername: friend.username
             },
-            function(response){
-                if (response.code === 0){
+            function (response) {
+                if (response.code === 0) {
                     var session = createSession(friend.nickname, friend.username, friend.avatar);
                     app.sessions.push(session);
                 }
@@ -403,7 +412,7 @@
         // 发送消息
         document.onkeydown = function (t) {
             if (t.ctrlKey && 13 === t.keyCode) {
-                if (app.messageInput.trim().length > 0){
+                if (app.messageInput.trim().length > 0) {
                     stompClient.send("/app/chat", {}, app.sendMessage);
                     var message = {
                         nickname: app.user.nickname,
@@ -413,7 +422,7 @@
                         content: app.messageInput,
                         time: getNowDate()
                     };
-                    if (app.currentSessionId !== 1){
+                    if (app.currentSessionId !== 1) {
                         app.sessions[app.currentSessionId].messages.push(message);
                     }
                     app.messageInput = "";

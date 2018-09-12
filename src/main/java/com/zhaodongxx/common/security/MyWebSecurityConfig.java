@@ -34,7 +34,7 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers( "/login/**", "/logout/success").permitAll()
+                .antMatchers("/login/**", "/logout/success").permitAll()
                 .anyRequest().authenticated()
                 .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
                     @Override
@@ -48,10 +48,13 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
-                .usernameParameter("account")
+                .usernameParameter("username")
                 .passwordParameter("password")
-//                .successForwardUrl("/login/success")
+//                登录成功后重定向地址（POST）
+//                .successForwardUrl("/app/chat")
 //                .failureForwardUrl("/login/failure")
+//                登录成功后默认跳转的url（GET）
+                .defaultSuccessUrl("/app/chat", true)
                 .permitAll()
                 .and().logout().logoutUrl("/logout")
                 .logoutSuccessHandler(new MyLogoutHandler())

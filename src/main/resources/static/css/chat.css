@@ -148,7 +148,7 @@ ul {
 
 .m-message {
     padding: 10px 15px;
-    overflow-y: scroll
+    overflow-y: auto
 }
 
 .m-message li {
@@ -335,7 +335,7 @@ ul {
 
 .m-message {
     padding: 10px 15px;
-    overflow-y: scroll
+    overflow-y: auto
 }
 
 .m-message li {
