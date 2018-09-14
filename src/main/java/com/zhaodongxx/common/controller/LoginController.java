@@ -30,4 +30,5 @@ public class LoginController {
     public String error() {
         return "chat";
     }
+
 }

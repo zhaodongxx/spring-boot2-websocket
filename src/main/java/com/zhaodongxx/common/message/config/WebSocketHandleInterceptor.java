@@ -10,9 +10,6 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptorAdapter;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-
-import java.security.Principal;
 
 /**
  * 输入消息拦截器
@@ -35,26 +32,23 @@ public class WebSocketHandleInterceptor extends ChannelInterceptorAdapter {
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
-        log.info("join WebSocketHandleInterceptor preSend");
-
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
 
-        log.info(accessor.getCommand().name());
+        log.info("[服务器 -> 客户端] 消息类型 "+accessor.getCommand().name());
 
         if (StompCommand.CONNECT.equals(accessor.getCommand())||StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
-            Principal username = accessor.getUser();
-            if (StringUtils.isEmpty(username)){
-                return null;
-            }
-            // 绑定user
-            accessor.setUser(username);
+//            Principal username = accessor.getUser();
+//            if (StringUtils.isEmpty(username)){
+//                return null;
+//            }
+//            // 绑定user
+//            accessor.setUser(username);
         }
         return message;
     }
 
     @Override
     public void afterSendCompletion(Message<?> message, MessageChannel channel, boolean sent, Exception ex) {
-        log.info(" afterSendCompletion");
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         StompCommand command = accessor.getCommand();
         if (StompCommand.SUBSCRIBE.equals(command)){

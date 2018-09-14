@@ -108,7 +108,9 @@ public class MyFilterSecurityMetadataSource implements FilterInvocationSecurityM
                 "/js/**",
                 "/scss/**",
                 "/img/**",
-                "/logout/success"
+                "/logout/success",
+                "/any-socket/**",
+                "/admin/**"
         );
     }
 

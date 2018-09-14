@@ -9,7 +9,6 @@ import org.springframework.messaging.handler.invocation.HandlerMethodReturnValue
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -52,13 +51,14 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     /**
      * 配置消息代理
      *
+     *
      * @param registry
      */
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.setApplicationDestinationPrefixes("/app");
-        registry.enableSimpleBroker("/topic/", "/user/");
-        registry.setUserDestinationPrefix("user");
+        registry.enableSimpleBroker("/topic","/user");
+        registry.setUserDestinationPrefix("/user");
     }
 
     /**
@@ -79,20 +79,20 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             @Override
             public WebSocketHandler decorate(final WebSocketHandler handler) {
                 return new WebSocketHandlerDecorator(handler) {
-                    @Override
-                    public void afterConnectionEstablished(final WebSocketSession session) throws Exception {
-                        String username = session.getPrincipal().getName();
-                        log.info("online: " + username);
-                        super.afterConnectionEstablished(session);
-                    }
+//                    @Override
+//                    public void afterConnectionEstablished(final WebSocketSession session) throws Exception {
+//                        String username = session.getPrincipal().getName();
+//                        log.info("online: " + username);
+//                        super.afterConnectionEstablished(session);
+//                    }
 
-                    @Override
-                    public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus)
-                            throws Exception {
-                        String username = session.getPrincipal().getName();
-                        log.info("offline: " + username);
-                        super.afterConnectionClosed(session, closeStatus);
-                    }
+//                    @Override
+//                    public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus)
+//                            throws Exception {
+//                        String username = session.getPrincipal().getName();
+//                        log.info("offline: " + username);
+//                        super.afterConnectionClosed(session, closeStatus);
+//                    }
 
                     /**
                      * 接受消息时被触发

@@ -307,7 +307,7 @@
             stompClient.subscribe('/topic/notice', function (message) {
                 saveMessageToLocal(message, true);
             });
-            stompClient.subscribe('/user/topic/chat', function (message) {
+            stompClient.subscribe('/queue/test/message', function (message) {
                 saveMessageToLocal(message, false);
             });
         });

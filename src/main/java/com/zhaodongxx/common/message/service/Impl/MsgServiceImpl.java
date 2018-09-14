@@ -1,9 +1,9 @@
 package com.zhaodongxx.common.message.service.Impl;
 
-import com.zhaodongxx.common.message.model.Message;
-import com.zhaodongxx.common.message.service.MsgService;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.zhaodongxx.common.message.model.Message;
+import com.zhaodongxx.common.message.service.MsgService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class MsgServiceImpl implements MsgService {
 
     private static final String ALL = "IM_ALL";
     private static final String TO_ALL_DESTINATION = "/topic/notice";
-    private static final String TO_USER_DESTINATION = "/queue/chat";
+    private static final String TO_USER_DESTINATION = "/message";
 
     @Autowired
     private SimpMessagingTemplate template;
@@ -102,7 +102,6 @@ public class MsgServiceImpl implements MsgService {
         }
     }
 
-
     //TODO 2018-4-20 15:40:05 赵东 在发送消息前确认用户是否在线
     //TODO 2018-4-20 15:40:05 赵东 返回消息ID
 
@@ -129,9 +128,6 @@ public class MsgServiceImpl implements MsgService {
 
     private void save(Message message) {
     }
-
-
-
 }
 
 
