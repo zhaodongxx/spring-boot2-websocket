@@ -35,7 +35,7 @@ public class TestController {
     public RestResult msgToUser(@RequestParam String content,
                                 @RequestParam(required = false) String account,
                                 @RequestParam(defaultValue = "false") boolean doSave) {
-        msgService.send(content, account, doSave);
+        msgService.send(content, account);
         return ResultGenerator.genSuccessResult();
     }
 }

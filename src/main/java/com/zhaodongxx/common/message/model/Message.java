@@ -39,9 +39,4 @@ public class Message {
      * 发送时间
      */
     private Date sendTime;
-
-    /**
-     * 是否保存
-     */
-    private boolean doSave;
 }

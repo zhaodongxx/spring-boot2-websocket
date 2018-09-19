@@ -110,6 +110,7 @@ public class MyFilterSecurityMetadataSource implements FilterInvocationSecurityM
                 "/img/**",
                 "/logout/success",
                 "/any-socket/**",
+                "/ws/**",
                 "/admin/**"
         );
     }

@@ -24,8 +24,8 @@ public class WebSocketHandshakeInterceptor implements HandshakeInterceptor {
     @Override
     public boolean beforeHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse,
                                    WebSocketHandler webSocketHandler, Map<String, Object> map) throws Exception {
-        log.info("____beforeHandshake");
-        log.info("{}", (serverHttpRequest instanceof ServletServerHttpRequest));
+        //log.info("____beforeHandshake");
+        //log.info("{}", (serverHttpRequest instanceof ServletServerHttpRequest));
 
         if (serverHttpRequest instanceof ServletServerHttpRequest) {
             ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) serverHttpRequest;
@@ -49,6 +49,6 @@ public class WebSocketHandshakeInterceptor implements HandshakeInterceptor {
     @Override
     public void afterHandshake(ServerHttpRequest serverHttpRequest,
                                ServerHttpResponse serverHttpResponse, WebSocketHandler webSocketHandler, Exception e) {
-        log.info("____afterHandshake");
+        //log.info("____afterHandshake");
     }
 }

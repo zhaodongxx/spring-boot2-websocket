@@ -42,7 +42,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
      */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry stompEndpointRegistry) {
-        stompEndpointRegistry.addEndpoint("/any-socket")
+        stompEndpointRegistry.addEndpoint("/ws")
                 .setAllowedOrigins("*")
                 .addInterceptors(new WebSocketHandshakeInterceptor())
                 .withSockJS();
@@ -51,13 +51,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     /**
      * 配置消息代理
      *
-     *
      * @param registry
      */
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.setApplicationDestinationPrefixes("/app");
         registry.enableSimpleBroker("/topic","/user");
+        //点对点通讯，默认前缀user,可省略
         registry.setUserDestinationPrefix("/user");
     }
 

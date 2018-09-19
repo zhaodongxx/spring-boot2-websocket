@@ -6,35 +6,28 @@ package com.zhaodongxx.common.message.service;
  * @since 2018/4/17 13:29
  */
 public interface MsgService {
+
     /**
-     * 给所有用户发送系统消息，默认保存
+     * 给所有用户发送 系统消息
      *
      * @param message 消息
      */
     void send(String message);
 
     /**
-     * 给所有用户发送系统消息
+     * 个人用户发送全局消息
      *
      * @param message 消息
-     * @param doSave 是否保存消息
+     * @param sender 消息发送者
      */
-    void send(String message, boolean doSave);
-
-    /**
-     * 根据账号向指定用户发送消息，默认保存
-     *
-     * @param message 消息
-     * @param account 消息接受者的账号
-     */
-    void send(String message, String account);
+    void send(String message, String sender);
 
     /**
      * 根据账号向指定用户发送消息
      *
      * @param message 消息
+     * @param sender 消息发送者
      * @param account 消息接受者的账号
-     * @param doSave 是否保存消息
      */
-    void send(String message, String account, boolean doSave);
+    void send(String message, String sender,String account);
 }

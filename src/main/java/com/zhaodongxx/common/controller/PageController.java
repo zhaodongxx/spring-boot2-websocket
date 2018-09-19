@@ -1,20 +1,21 @@
 package com.zhaodongxx.common.controller;
 
+import com.zhaodongxx.common.security.MyUserDetails;
+import com.zhaodongxx.common.security.UserUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * @author zhaodong zhaodongxx@outlook.com
- * @version v1.0
- * @since 2018/9/11 20:28
+ * Created by zhaodong on 2018/9/19 22:20
  */
 @Controller
 @Slf4j
-public class LoginController {
+public class PageController {
 
     @GetMapping("/")
     public void index(HttpServletResponse response) throws IOException {
@@ -31,4 +32,13 @@ public class LoginController {
         return "chat";
     }
 
+    /**
+     * 即时通信
+     */
+    @GetMapping(value = "/app/chat")
+    public String chat(Model model) {
+        MyUserDetails user = UserUtil.getCurrentUser();
+        model.addAttribute("username", user.getUsername());
+        return "chat";
+    }
 }

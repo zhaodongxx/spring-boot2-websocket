@@ -37,7 +37,7 @@
                                     <header class="text-left">
                                         <img class="avatar d-inline" width="40" height="40" alt="Coffce"
                                              src="/avatar/user.jpg">
-                                        <p class="name" th:text="${username}"></p>
+                                        <p class="name">{{ user.username }}</p>
                                     </header>
                                     <footer>
                                         <input class="search" placeholder="搜索用户..." v-model="searchInput">
@@ -152,36 +152,34 @@
     var app = new Vue({
         el: '#chat',
         data: {
-            user: {
-                avatar:'/avatar/user.jpg'
-            },               //当前用户信息
+            user: {},               //当前用户信息
             currentSessionId: 0,    //当前会话ID，对应好友列表顺序
             messageInput: "",       //输入框的内容 - 消息
             searchInput: "",        //输入框内容 - 好友搜索
             keyword: "",          //输入框内容 - 查找用户
             showModal: false,       //弹出框是否显示
             sessions: [             //所有会话信息
+//                {
+//                    id: 0,
+//                    num: 0,
+//                    user: {
+//                        nickname: "AnyIM 小沫",
+//                        username: "IM_ROBOT",
+//                        avatar: "http://img.hb.aicdn.com/79cf2c86f7c626ae5d135786b912803275fcd0c82423-LJyhZR_fw658"
+//                    },
+//                    messages: [
+//                        {
+//                            nickname: "AnyIM 小沫",
+//                            username: "IM_ROBOT",
+//                            avatar: "http://img.hb.aicdn.com/79cf2c86f7c626ae5d135786b912803275fcd0c82423-LJyhZR_fw658",
+//                            me: false,
+//                            content: "Hello，我是小茉！你可以随意调侃我哦！ o(>﹏<)o ",
+//                            time: getNowDate()
+//                        }
+//                    ]
+//                },
                 {
                     id: 0,
-                    num: 0,
-                    user: {
-                        nickname: "AnyIM 小沫",
-                        username: "IM_ROBOT",
-                        avatar: "http://img.hb.aicdn.com/79cf2c86f7c626ae5d135786b912803275fcd0c82423-LJyhZR_fw658"
-                    },
-                    messages: [
-                        {
-                            nickname: "AnyIM 小沫",
-                            username: "IM_ROBOT",
-                            avatar: "http://img.hb.aicdn.com/79cf2c86f7c626ae5d135786b912803275fcd0c82423-LJyhZR_fw658",
-                            me: false,
-                            content: "Hello，我是小茉！你可以随意调侃我哦！ o(>﹏<)o ",
-                            time: getNowDate()
-                        }
-                    ]
-                },
-                {
-                    id: 1,
                     num: 0,
                     user: {
                         nickname: "全服大厅",
@@ -252,7 +250,13 @@
                 return this.sessions[this.currentSessionId].messages;
             },
             sendMessage: function () {
-                return '{"content":"' + this.messageInput + '","receiver":"' + this.sessions[this.currentSessionId].user.username + '"}';
+                return JSON.stringify(
+                    {
+                        content: this.messageInput,
+                        receiver: this.sessions[this.currentSessionId].user.username,
+                        sender: this.user.username
+                    }
+                );
             },
             sessionMap: function () {
                 var map = {};
@@ -272,7 +276,7 @@
      */
     function user() {
         $.get("/api/userInfo", function (response) {
-            if (response.code === 0) {
+            if (response.code === 'SUCCESS') {
                 app.user = response.data;
             }
         });
@@ -301,13 +305,13 @@
      * 建立 WebSocket 连接
      */
     function connect() {
-        var socket = new SockJS('/any-socket');
+        var socket = new SockJS('/ws');
         stompClient = Stomp.over(socket);
         stompClient.connect({}, function (frame) {
             stompClient.subscribe('/topic/notice', function (message) {
                 saveMessageToLocal(message, true);
             });
-            stompClient.subscribe('/queue/test/message', function (message) {
+            stompClient.subscribe('/user/test/message', function (message) {
                 saveMessageToLocal(message, false);
             });
         });
@@ -320,16 +324,18 @@
         var data = JSON.parse(response.body);
         var message = {
             nickname: data.nickname,
-            username: data.username,
-            avatar: data.avatar,
+            username: data.sender,
+//            avatar: data.avatar,
+            avatar: "/avatar/user.jpg",
             me: false,
             content: data.content,
             time: data.sendTime
         };
         var sessionId = app.sessionMap[message.username];
         message.me = (app.user.username === message.username);
+
         if (notice) {
-            app.sessions[1].messages.push(message);
+            !message.me && app.sessions[0].messages.push(message);
         } else {
             if (app.sessions[sessionId]) {
                 app.sessions[sessionId].messages.push(message);

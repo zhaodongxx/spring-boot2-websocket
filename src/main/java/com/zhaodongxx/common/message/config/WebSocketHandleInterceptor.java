@@ -34,7 +34,7 @@ public class WebSocketHandleInterceptor extends ChannelInterceptorAdapter {
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
 
-        log.info("[服务器 -> 客户端] 消息类型 "+accessor.getCommand().name());
+        //log.info("[服务器 -> 客户端] 消息类型 "+accessor.getCommand().name());
 
         if (StompCommand.CONNECT.equals(accessor.getCommand())||StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
 //            Principal username = accessor.getUser();
