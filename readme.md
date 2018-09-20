@@ -5,7 +5,7 @@ Spring Boot2 + WebSocket + Spring Security实现的一个聊天室功能
 
 **声明**
 
-> 前端界面原型来自于开源项目 any-im
+> 前端界面原型来自于开源项目 [any-im](https://gitee.com/anoyi/anyim)
 
 **登录**
 
@@ -18,7 +18,6 @@ Spring Boot2 + WebSocket + Spring Security实现的一个聊天室功能
 
 - [x] **群发消息** ：全服大厅
 - [ ] **点对点通信** ：私聊
-- [ ]
 
 
 **注意**
