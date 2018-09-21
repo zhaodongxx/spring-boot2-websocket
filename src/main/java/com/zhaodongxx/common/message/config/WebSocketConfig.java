@@ -1,5 +1,7 @@
 package com.zhaodongxx.common.message.config;
 
+import com.zhaodongxx.common.message.service.MsgService;
+import com.zhaodongxx.common.model.User;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +11,7 @@ import org.springframework.messaging.handler.invocation.HandlerMethodReturnValue
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -19,6 +22,8 @@ import org.springframework.web.socket.config.annotation.WebSocketTransportRegist
 import org.springframework.web.socket.handler.WebSocketHandlerDecorator;
 import org.springframework.web.socket.handler.WebSocketHandlerDecoratorFactory;
 
+import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,6 +40,11 @@ import java.util.List;
 @AllArgsConstructor
 @Slf4j
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+
+    public List<User> users = new ArrayList<>(10);
+
+    @Resource
+    public MsgService msgService;
 
     /**
      * 配置服务器要监听的端口
@@ -56,7 +66,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.setApplicationDestinationPrefixes("/app");
-        registry.enableSimpleBroker("/topic","/user");
+        registry.enableSimpleBroker("/topic", "/user");
         //点对点通讯，默认前缀user,可省略
         registry.setUserDestinationPrefix("/user");
     }
@@ -79,20 +89,28 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             @Override
             public WebSocketHandler decorate(final WebSocketHandler handler) {
                 return new WebSocketHandlerDecorator(handler) {
-//                    @Override
-//                    public void afterConnectionEstablished(final WebSocketSession session) throws Exception {
-//                        String username = session.getPrincipal().getName();
-//                        log.info("online: " + username);
-//                        super.afterConnectionEstablished(session);
-//                    }
 
-//                    @Override
-//                    public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus)
-//                            throws Exception {
-//                        String username = session.getPrincipal().getName();
-//                        log.info("offline: " + username);
-//                        super.afterConnectionClosed(session, closeStatus);
-//                    }
+                    //读取用户未读消息
+                    @Override
+                    public void afterConnectionEstablished(final WebSocketSession session) throws Exception {
+                        String username = session.getPrincipal().getName();
+                        log.info(username + " 登录了");
+
+                        User user = new User().setUsername(username).setAvatar("/avatar/user.jpg");
+
+                        users.add(user);
+//                        template.convertAndSend("/topic/userlist", JSON.toJSON(user));
+
+                        super.afterConnectionEstablished(session);
+                    }
+
+                    @Override
+                    public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus)
+                            throws Exception {
+                        String username = session.getPrincipal().getName();
+                        log.info("offline: " + username);
+                        super.afterConnectionClosed(session, closeStatus);
+                    }
 
                     /**
                      * 接受消息时被触发

@@ -7,6 +7,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="referrer" content="never">
     <title>即时通信-场景</title>
+    <link rel="shortcut icon" href="/imgs/logo.ico">
     <!-- Font Awesome -->
     <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <!-- Bootstrap core CSS -->
@@ -56,9 +57,6 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <button class="m-button" @click="onModalShow">
-                                    添加好友
-                                </button>
                             </div>
                             <div class="main">
                                 <div class="m-message">
@@ -80,35 +78,6 @@
                                     <textarea placeholder="按 Ctrl + Enter 发送" v-model="messageInput"> </textarea>
                                 </div>
                             </div>
-
-                            <div class="modal-mask" v-show="showModal" transition="modal">
-                                <div class="modal-wrapper">
-                                    <div class="modal-container">
-                                        <div class="m-card">
-                                            <footer>
-                                                <input class="search" placeholder="查找用户" v-model="keyword"
-                                                       @keyUp="searchUser">
-                                            </footer>
-                                        </div>
-                                        <div class="m-list" style="overflow-y: auto; height: 370px;">
-                                            <!-- 在线列表 -->
-                                            <ul style="color: #fff">
-                                                <li v-for="onlineUser in onlineUsers" class="text-left">
-                                                    <img class="avatar d-inline" width="30" height="30"
-                                                         v-bind:src="onlineUser.avatar"/>
-                                                    <p class="name">{{ onlineUser.nickname }}</p>
-                                                    <button class="friend-add" @click="addFriend(onlineUser)"> 添加
-                                                    </button>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <button class="m-button" @click="onModalClose">
-                                            关闭
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
                         </div>
 
                     </div>
@@ -182,7 +151,7 @@
                     id: 0,
                     num: 0,
                     user: {
-                        nickname: "全服大厅",
+                        nickname: "大厅",
                         username: "IM_ALL",
                         avatar: "http://upload-images.jianshu.io/upload_images/3424642-655714782ccac90f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"
                     },
@@ -311,7 +280,10 @@
             stompClient.subscribe('/topic/notice', function (message) {
                 saveMessageToLocal(message, true);
             });
-            stompClient.subscribe('/user/test/message', function (message) {
+            stompClient.subscribe('/topic/chat', function (message) {
+                saveMessageToLocal(message, true);
+            });
+            stompClient.subscribe('/user/' + this.user.username + '/message', function (message) {
                 saveMessageToLocal(message, false);
             });
         });

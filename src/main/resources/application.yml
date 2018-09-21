@@ -1,6 +1,6 @@
 # set server port
 server:
-  port: 8080  # 配置端口
+  port: 9000  # 配置端口
   servlet:
     context-path: /   # 项目启动地址：8080/
 
@@ -20,7 +20,6 @@ spring:
 security:
   user:
     enabled: true
-    password:
 ###   Log Config    ###
 logging:
   path: ./log/

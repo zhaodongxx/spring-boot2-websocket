@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>登录 / 注册</title>
+    <link rel="shortcut icon" href="/imgs/logo.ico">
     <!-- Font Awesome -->
     <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <!-- Bootstrap core CSS -->
@@ -17,7 +18,7 @@
     <link href="/css/toastr.css" rel="stylesheet">
     <style>
         .intro-2 {
-            background: url("https://upload-images.jianshu.io/upload_images/3424642-29b5a605c230168b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240")no-repeat center center;
+            background: url("https://upload-images.jianshu.io/upload_images/3424642-29b5a605c230168b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240") no-repeat center center;
             background-size: cover;
         }
 
@@ -61,8 +62,8 @@
             box-shadow: 0 1px 0 0 #fb5364;
         }
 
-        .md-form input[type=text]:focus:not([readonly])+label,
-        .md-form input[type=password]:focus:not([readonly])+label {
+        .md-form input[type=text]:focus:not([readonly]) + label,
+        .md-form input[type=password]:focus:not([readonly]) + label {
             color: #fb5364;
         }
 
@@ -82,7 +83,7 @@
     <!--<nav th:replace="~{common :: nav}"></nav>-->
 
     <!--Intro Section-->
-    <section class="view intro-2" >
+    <section class="view intro-2">
         <div class="full-bg-img">
             <div class="mask rgba-indigo-light flex-center">
                 <div class="container">
@@ -114,8 +115,11 @@
 
                                         <div class="text-center my-4">
                                             <button class="btn pink-gradient px-5" type="submit">登录</button>
-                                            <button class="btn pink-gradient px-5" type="button" @click="onSignInClick">注册</button>
+                                            <!--<button class="btn pink-gradient px-5" type="button" @click="onSignInClick">-->
+                                            <!--注册-->
+                                            <!--</button>-->
                                         </div>
+                                        <div style="text-align: center;color:white">账号任意，密码：123456</div>
 
                                     </form>
 
@@ -195,14 +199,14 @@
             message: ""
         },
         methods: {
-            onSignInClick: function (){
+            onSignInClick: function () {
                 $("#sign-username").val('');
                 $("#sign-password").val('');
                 $("#nickname").val('');
                 $("#loginDiv").hide(200);
                 $("#signInDiv").show(300);
             },
-            onLoginClick: function (){
+            onLoginClick: function () {
                 $("#username").val('');
                 $("#password").val('');
                 $("#signInDiv").hide(300);
@@ -212,17 +216,17 @@
                 var username = $("#sign-username").val();
                 var password = $("#sign-password").val();
                 var nickname = $("#nickname").val();
-                if(username.trim().length === 0){
+                if (username.trim().length === 0) {
                     toastr.error("用户名不能为空 !");
                     return;
                 }
 
-                if(password.trim().length === 0){
+                if (password.trim().length === 0) {
                     toastr.error("密码不能为空 !");
                     return;
                 }
 
-                if(nickname.trim().length === 0){
+                if (nickname.trim().length === 0) {
                     toastr.error("昵称不能为空 !");
                     return;
                 }
@@ -234,11 +238,11 @@
                         "nickname": nickname
                     },
                     function (data) {
-                        if (data.code === 0){
+                        if (data.code === 0) {
                             toastr.success("注册成功 ！");
                             $("#signInDiv").hide(300);
                             $("#loginDiv").show(300);
-                        }else{
+                        } else {
                             toastr.error("注册失败：" + data.data);
                         }
                     }

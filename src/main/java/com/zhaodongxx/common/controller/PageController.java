@@ -1,10 +1,7 @@
 package com.zhaodongxx.common.controller;
 
-import com.zhaodongxx.common.security.MyUserDetails;
-import com.zhaodongxx.common.security.UserUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.servlet.http.HttpServletResponse;
@@ -36,9 +33,9 @@ public class PageController {
      * 即时通信
      */
     @GetMapping(value = "/app/chat")
-    public String chat(Model model) {
-        MyUserDetails user = UserUtil.getCurrentUser();
-        model.addAttribute("username", user.getUsername());
+    public String chat() {
+//        MyUserDetails user = UserUtil.getCurrentUser();
+//        model.addAttribute("username", user.getUsername());
         return "chat";
     }
 }

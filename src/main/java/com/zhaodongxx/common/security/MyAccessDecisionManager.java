@@ -47,7 +47,6 @@ public class MyAccessDecisionManager implements AccessDecisionManager {
         log.info("用户拥有的权限列表 {}",JSON.toJSONString(authentication.getAuthorities()));
         log.info("该路径需要的权限列表 {}",JSON.toJSONString(configAttributes));
 
-
         //未登录时security会默认生成一个匿名用户,
         if (authentication instanceof AnonymousAuthenticationToken ||
                 authentication.getPrincipal().toString() == "anonymousUser") {

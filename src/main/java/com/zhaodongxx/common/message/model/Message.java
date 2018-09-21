@@ -21,6 +21,11 @@ import java.util.Date;
 public class Message {
 
     /**
+     * 消息类型
+     */
+    private MessageType msgType;
+
+    /**
      * 消息发送者：系统或者用户名
      */
     private String sender;
@@ -39,4 +44,13 @@ public class Message {
      * 发送时间
      */
     private Date sendTime;
+}
+
+/**
+ * 消息类型
+ */
+enum MessageType {
+    CHAT,
+    JOIN,
+    LEAVE
 }

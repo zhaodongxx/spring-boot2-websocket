@@ -21,7 +21,8 @@ import java.util.Date;
 @Service
 public class MsgServiceImpl implements MsgService {
     private static final String ALL = "IM_ALL";
-    private static final String TO_ALL_DESTINATION = "/topic/notice";
+    private static final String TO_ALL_DESTINATION = "/topic/chat";
+    private static final String SYSTEM_NOTICE_DESTINATION = "/topic/notice";
     private static final String TO_USER_DESTINATION = "/message";
 
     @Autowired
@@ -54,6 +55,7 @@ public class MsgServiceImpl implements MsgService {
      * @param message 消息
      * @param account 消息接受者的账号
      */
+    @Override
     public void send(String message, String sender, String account) {
 
         Message msg = new Message()
