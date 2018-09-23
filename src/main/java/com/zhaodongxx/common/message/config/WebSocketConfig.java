@@ -1,7 +1,5 @@
 package com.zhaodongxx.common.message.config;
 
-import com.zhaodongxx.common.message.service.MsgService;
-import com.zhaodongxx.common.model.User;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
@@ -22,8 +20,6 @@ import org.springframework.web.socket.config.annotation.WebSocketTransportRegist
 import org.springframework.web.socket.handler.WebSocketHandlerDecorator;
 import org.springframework.web.socket.handler.WebSocketHandlerDecoratorFactory;
 
-import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,10 +37,11 @@ import java.util.List;
 @Slf4j
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    public List<User> users = new ArrayList<>(10);
+    //public List<User> users = new ArrayList<>(10);
 
-    @Resource
-    public MsgService msgService;
+    //
+    //@Resource
+    //public MsgService msgService;
 
     /**
      * 配置服务器要监听的端口
@@ -96,9 +93,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                         String username = session.getPrincipal().getName();
                         log.info(username + " 登录了");
 
-                        User user = new User().setUsername(username).setAvatar("/avatar/user.jpg");
+                        //User user = new User().setUsername(username).setAvatar("/avatar/user.jpg");
 
-                        users.add(user);
+                        //users.add(user);
 //                        template.convertAndSend("/topic/userlist", JSON.toJSON(user));
 
                         super.afterConnectionEstablished(session);

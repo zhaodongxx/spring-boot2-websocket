@@ -1,10 +1,13 @@
 package com.zhaodongxx.common.message.service;
 
+import org.springframework.stereotype.Service;
+
 /**
  * @author zhaodong zhaodongxx@outlook.com
  * @version v1.0
  * @since 2018/4/17 13:29
  */
+@Service
 public interface MsgService {
 
     /**
