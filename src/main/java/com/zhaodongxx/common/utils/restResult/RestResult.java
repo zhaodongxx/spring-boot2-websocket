@@ -7,11 +7,11 @@ package com.zhaodongxx.common.utils.restResult;
  *
  */
 public class RestResult<T> {
-    private ResultCodeEnum code;
+    private int code;
     private String message;
     private  T data;
 
-    public ResultCodeEnum getCode() {
+    public int getCode() {
         return code;
     }
 
@@ -19,7 +19,7 @@ public class RestResult<T> {
     }
 
     public RestResult setCode(ResultCodeEnum resultCode) {
-        this.code = resultCode;
+        this.code = resultCode.getCode();
         return this;
     }
 
